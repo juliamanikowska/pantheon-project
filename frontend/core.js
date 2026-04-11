@@ -3,42 +3,56 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputField = document.getElementById("command-field");
     const resultBlock = document.getElementById("result-block");
 
-    function renderTable(data) {
-        let html = `
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Country</th>
-                            <th>Year</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
+const pretty = (str) =>
+    str.replaceAll("_", " ")
+       .replace(/\b\w/g, c => c.toUpperCase());
 
-        data.forEach(item => {
-            html += `
-                <tr>
-                    <td>${item.id}</td>
-                    <td>${item.name}</td>
-                    <td>${item.score}</td>
-                    <td>${item.country}</td>
-                    <td>${item.year}</td>
-                </tr>
-            `;
+//moja ekstra funkcja na automatyczne generowanie tabeli w zaleznosci od rozmiaru
+function renderTable(data) {
+    if (!data || data.length === 0) {
+        resultBlock.innerHTML = "<p>No data</p>";
+        return;
+    }
+
+    const columns = Object.keys(data[0]);
+
+    let html = `
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+    `;
+
+    columns.forEach(col => {
+        html += `<th>${pretty(col)}</th>`;
+    });
+
+    html += `
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    data.forEach(item => {
+        html += "<tr>";
+
+        columns.forEach(col => {
+            const value = item[col];
+
+            html += `<td>${value ?? "-"}</td>`;
         });
 
-        html += `
-                    </tbody>
-                </table>
-            </div>
-        `;
+        html += "</tr>";
+    });
 
-        resultBlock.innerHTML = html;
-    }
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    resultBlock.innerHTML = html;
+}
     async function handleCommand() {
         const input = inputField.value.trim();
 
@@ -47,11 +61,14 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             let response;
             let data;
+            //GET /objects
+            //TODO podpiąć żeby pokazywało z database, a poza tym działa
             if (input === "GET /objects") {
                 response = await fetch("http://localhost:3000/objects");
                 data = await response.json();
                 renderTable(data);
             }
+            //GET /objects?name=
             else if (input.startsWith("GET /object?name=")) {
                 const name = input.split("=")[1];
 
@@ -62,6 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 data = await response.json();
                 renderTable(data);
             }
+            //POST /object
+            //narazie dodaje przykladowy rekord
+            //TODO zmienic zeby dodawalo wpisany przez uzytkownika
             else if (input === "POST /object") {
                 response = await fetch("http://localhost:3000/object", {
                     method: "POST",
@@ -69,16 +89,32 @@ document.addEventListener("DOMContentLoaded", () => {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        name: "New Person",
-                        score: 50,
-                        country: "Unknown",
-                        year: 2000
+                        article_id: 3, 
+                        full_name: "Bruce Lee", 
+                        sex: "Male", 
+                        birth_year: 1999, 
+                        city: "Kij wi", 
+                        state: "LA", 
+                        country: "China", 
+                        continent: "Asia", 
+                        latitude: 189, 
+                        longitude: 13.5, 
+                        occupation: "Actor", 
+                        industry: "Fighting", 
+                        domain: "Dragon", 
+                        article_languages: 6543, 
+                        page_views: 52543634, 
+                        average_views: 523452, 
+                        historical_popularity_index: 50.0
                     })
                 });
 
                 data = await response.json();
                 resultBlock.innerText = JSON.stringify(data, null, 2);
             }
+            //PUT /object
+            //narazie zmienia przykladowy rekord na przykładowy
+            //TODO zrobic zeby zmienialo podany rekord i żeby ogólnie działało
             else if (input === "PUT /object") {
                 response = await fetch("http://localhost:3000/object/1", {
                     method: "PUT",
@@ -86,21 +122,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        score: 99
+                        sex: "Female",
                     })
                 });
 
                 data = await response.json();
                 resultBlock.innerText = JSON.stringify(data, null, 2);
             }
-            else if (input === "GET /stats") {
-                response = await fetch("http://localhost:3000/stats");
-                data = await response.json();
-
-                resultBlock.innerHTML = `
-                    <pre>${JSON.stringify(data, null, 2)}</pre>
-                `;
-            }
+            //TODO ten na 5.0
             else {
                 resultBlock.innerHTML = `<p style="color:red">Invalid command</p>`;
                 return;
