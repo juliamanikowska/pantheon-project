@@ -1,0 +1,91 @@
+body{
+    margin: 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    font-family: sans-serif;
+    background-color: seashell;
+    color: darkslategray;
+    gap: 10px;
+}
+
+h1{
+    margin-bottom: 10px;
+}
+
+h2{
+    margin-bottom: 20px;
+}
+
+.block-section{
+    width: 90%;
+    max-width: 1000px;
+    padding: 20px;
+    background-color: azure;
+    border: 2px solid lightblue;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.command-block{
+    display: flex;
+    gap: 10px;
+}
+
+#command-field{
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 2px solid gray;
+    outline: none;
+}
+
+#submit-button{
+    padding: 10px 20px;
+    background-color: white;
+    font-size: 1rem;
+    color: darkslategray;
+    border: 2px solid gray;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#submit-button:active{
+    transform: scale(0.95);
+}
+
+.table-wrapper{
+    width: 100%;
+    max-width: 100%;
+    max-height: 400px;
+    display: block;
+    overflow: auto;
+    border: 2px solid lightblue;
+    border-radius: 10px;
+    background-color: white;
+}
+
+table{
+    display: block;
+    border-collapse: collapse;
+    width: max-content;
+    min-width: 100%;
+}
+
+th, td{
+    padding: 10px;
+    border-bottom: 1px solid lightgray;
+    white-space: nowrap;
+    text-align: left;
+}
+
+th{
+    position: sticky;
+    top: 0;
+    background-color: azure;
+    z-index: 1;
+}
+
