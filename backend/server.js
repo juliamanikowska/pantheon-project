@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const pool = require('./db');
 
 const app = express();
 const PORT = 3000;
@@ -36,63 +37,284 @@ app.post("/command", (req, res) => {
 */
 
 //GET /objects
-//TODO podpiąć żeby pokazywało z database, a poza tym działa
-app.get("/objects", (req, res) => {
-    res.json(objects);
+app.get("/objects", async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM pantheon');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+//GET /objects/ids
+app.get("/objects/ids", async (req, res) => {
+    try {
+        const result = await pool.query('SELECT article_id FROM pantheon ORDER BY article_id ASC');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+//GET /objects/id
+app.get("/object/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    try {
+        const isFound = await pool.query(
+            `SELECT * FROM pantheon WHERE article_id = $1`,
+            [id]
+        );
+        if (isFound.rows.length === 0) {
+            return res.status(404).json({ error: "Object not found" });
+        }
+        const result = await pool.query(`SELECT * FROM pantheon WHERE article_id = $1`,
+            [id]
+        );
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
 });
 
 //GET /objects?name=
 //TODO zmienic name na inna kolumne - zdecydowac jaką
-app.get("/object", (req, res) => {
-    const { name } = req.query;
+app.get("/object", async (req, res) => {
+    const { param, query } = req.query;
 
-    if (!name) {
-        return res.status(400).json({ error: "Missing name parameter" });
+    const column = getColumnFromParam(param);
+
+    if (!column || !query) {
+        return res.status(400).json({ error: "Missing parameters" });
     }
 
-    const result = objects.filter(obj =>
-        obj.name.toLowerCase().includes(name.toLowerCase())
-    );
-
-    res.json(result);
+    try {
+        const result = await pool.query(
+            `SELECT * FROM pantheon WHERE `+column+` = $1`,
+            [query]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
 });
 
 //POST /object
 //narazie dodaje przykladowy rekord (dokladnie we frontend/core.js opisany)
 //TODO zmienic zeby dodawalo wpisany przez uzytkownika
-app.post("/object", (req, res) => {
-    const newObj = req.body;
+app.post("/object", async (req, res) => {
+    const {
+        article_id,
+        full_name,
+        sex,
+        birth_year,
+        city,
+        state,
+        country,
+        continent,
+        latitude,
+        longitude,
+        occupation,
+        industry,
+        domain,
+        article_languages,
+        page_views,
+        average_views,
+        historical_popularity_index
+    } = req.body;
 
-    newObj.id = objects.length + 1;
-    objects.push(newObj);
-
-    res.json({
-        message: "Object added",
-        object: newObj
-    });
+    try {
+        const result = await pool.query(
+            `INSERT INTO pantheon (
+                article_id,
+                full_name,
+                sex,
+                birth_year,
+                city,
+                state,
+                country,
+                continent,
+                latitude,
+                longitude,
+                occupation,
+                industry,
+                domain,
+                article_languages,
+                page_views,
+                average_views,
+                historical_popularity_index
+            )
+            VALUES (
+                $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17
+            )`,
+        [
+            article_id,
+            full_name,
+            sex,
+            birth_year,
+            city,
+            state,
+            country,
+            continent,
+            latitude,
+            longitude,
+            occupation,
+            industry,
+            domain,
+            article_languages,
+            page_views,
+            average_views,
+            historical_popularity_index
+        ]
+    );
+        res.status(201).json({
+            message: "Added row",
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
 });
 
 //PUT /object
 //narazie zmienia przykladowy rekord na przykładowy (dokladnie we frontend/core.js opisany)
 //TODO zrobic zeby zmienialo podany rekord i żeby ogólnie działało
-app.put("/object/:id", (req, res) => {
+app.put("/object/:id", async (req, res) => {
     const id = parseInt(req.params.id);
-    const update = req.body;
+    const {
+        article_id,
+        full_name,
+        sex,
+        birth_year,
+        city,
+        state,
+        country,
+        continent,
+        latitude,
+        longitude,
+        occupation,
+        industry,
+        domain,
+        article_languages,
+        page_views,
+        average_views,
+        historical_popularity_index
+    } = req.body;
 
-    const index = objects.findIndex(o => o.id === id);
+    try {
+        const isFound = await pool.query(
+            `SELECT * FROM pantheon WHERE article_id = $1`,
+            [id]
+        );
 
-    if (index === -1) {
-        return res.status(404).json({ error: "Object not found" });
+        if (isFound.rows.length === 0) {
+            return res.status(404).json({ error: "Object not found" });
+        }
+
+        const result = await pool.query(
+            `UPDATE pantheon SET
+                full_name = $1,
+                sex = $2,
+                birth_year = $3,
+                city = $4,
+                state = $5,
+                country = $6,
+                continent = $7,
+                latitude = $8,
+                longitude = $9,
+                occupation = $10,
+                industry = $11,
+                domain = $12,
+                article_languages = $13,
+                page_views = $14,
+                average_views = $15,
+                historical_popularity_index = $16
+                WHERE article_id = $17`,
+            [
+                full_name,
+                sex,
+                birth_year,
+                city,
+                state,
+                country,
+                continent,
+                latitude,
+                longitude,
+                occupation,
+                industry,
+                domain,
+                article_languages,
+                page_views,
+                average_views,
+                historical_popularity_index,
+                id
+            ]
+        );
+
+        res.json({
+            message: "Object updated",
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
     }
+});
 
-    objects[index] = { ...objects[index], ...update };
-
-    res.json({
-        message: "Object updated",
-        object: objects[index]
-    });
+//GET /objects/stats
+app.get("/objects/stats", async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM pantheon ORDER BY page_views DESC  LIMIT 5');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
 });
 
 app.listen(PORT, () => {
     console.log(`Serwer działa na http://localhost:${PORT}`);
 });
+
+function getColumnFromParam(param){
+    switch (param) {
+        case "1":
+            return "article_id";
+        case "2":
+            return "full_name";
+        case "3":
+            return "sex";
+        case "4":
+            return "birth_year";
+        case "5":
+            return "city";
+        case "6":
+            return "state";
+        case "7":
+            return "country";
+        case "8":
+            return "continent";
+        case "9":
+            return "latitude";
+        case "10":
+            return "longitude";
+        case "11":
+            return "occupation";
+        case "12":
+            return "industry";
+        case "13":
+            return "domain";
+        case "14":
+            return "article_languages";
+        case "15":
+            return "page_views";
+        case "16":
+            return "average_views";
+        case "17":
+            return "historical_popularity_index";
+        default:
+            return null;
+    }
+}

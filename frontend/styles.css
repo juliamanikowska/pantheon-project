@@ -89,3 +89,56 @@ th{
     z-index: 1;
 }
 
+/* przyciski */
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.btn {
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn small {
+    display: block;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* kolory wg funkcji */
+.get { background: #2d6cdf; }
+.filter { background: #17a2b8; }
+.post { background: #28a745; }
+.put { background: #fd7e14; }
+.stats { background: #6f42c1; }
+
+
+/* MODALE */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    width: 300px;
+    margin: 10% auto;
+    border-radius: 10px;
+}
