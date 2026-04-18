@@ -5,32 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantheon Project</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="core.js"></script>
 </head>
 <body>
+    
     <h1>Pantheon Project: Historical Popularity Index</h1>
 
     <section class="block-section">
 
-        <h2>Instruction:</h2>
+        <h2>What you wanna do</h2>
 
-        <div class="instruction-enumerate">
-            <ol>
-                <li></li>
-            </ol>
+        <div class="button-grid">
+
+            <button class="btn get" id="btn-get">
+                GET ALL
+            </button>
+
+            <button class="btn filter" id="btn-filter">
+                FILTER
+            </button>
+
+            <button class="btn post" id="btn-add">
+                ADD
+            </button>
+
+            <button class="btn put" id="btn-edit">
+                EDIT
+            </button>
+
+            <button class="btn stats" id="btn-stats">
+                STATS
+            </button>
+
         </div>
 
     </section>
 
-    <section class="block-section">
+    <div id="filterModal" class="modal">
+    <div class="modal-content">
+        <h3>Filtrowanie</h3>
+        <select id="filterParam">
+            <option value="1">article_id</option>
+            <option value="2">full_name</option>
+            <option value="3">sex</option>
+            <option value="4">birth_year</option>
+            <option value="5">city</option>
+            <option value="6">state</option>
+            <option value="7">country</option>
+            <option value="8">continent</option>
+            <option value="9">latitude</option>
+            <option value="10">longitude</option>
+            <option value="11">occupation</option>
+            <option value="12">industry</option>
+            <option value="13">domain</option>
+            <option value="14">article_languages</option>
+            <option value="15">page_views</option>
+            <option value="16">average_views</option>
+            <option value="17">historical_popularity_index</option>
+        </select>
+        <input id="filterName" />
 
-        <h2>Write your command:</h2>
-
-        <div class="command-block">
-            <input type="text" id="command-field">
-            <button id="submit-button">Submit</button>
+        <div class="modal-actions">
+            <button id="btn-save">Szukaj</button>
+            <button id="btn-filter-close">Zamknij</button>
         </div>
+    </div>
+    </div>
 
-    </section>
+    <div id="createModal" class="modal">
+    <div class="modal-content">
+        <h3>Dodaj rekord</h3>
+        <input type="text" id="article_id" placeholder="article_id">
+        <input type="text" id="full_name" placeholder="full_name">
+        <input type="text" id="sex" placeholder="sex">
+        <input type="text" id="birth_year" placeholder="birth_year">
+        <input type="text" id="city" placeholder="city">
+        <input type="text" id="state" placeholder="state">
+        <input type="text" id="country" placeholder="country">
+        <input type="text" id="continent" placeholder="continent">
+        <input type="text" id="latitude" placeholder="latitude">
+        <input type="text" id="longitude" placeholder="longitude">
+        <input type="text" id="occupation" placeholder="occupation">
+        <input type="text" id="industry" placeholder="industry">
+        <input type="text" id="domain" placeholder="domain">
+        <input type="text" id="article_languages" placeholder="article_languages">
+        <input type="text" id="page_views" placeholder="page_views">
+        <input type="text" id="average_views" placeholder="average_views">
+        <input type="text" id="historical_popularity_index" placeholder="historical_popularity_index">
+        <div class="modal-actions">
+            <button id="btn-modal-add">Szukaj</button>
+            <button id="btn-add-close">Zamknij</button>
+        </div>
+    </div>
+    </div>
+
+    <div id="editModal" class="modal">
+    <div class="modal-content">
+        <h3>Edytuj rekord</h3>
+        <select id="article_id_edit">
+            <option>Wybierz rekord</option>
+        </select>
+        <input type="text" id="full_name_e" placeholder="full_name">
+        <input type="text" id="sex_e" placeholder="sex">
+        <input type="text" id="birth_year_e" placeholder="birth_year">
+        <input type="text" id="city_e" placeholder="city">
+        <input type="text" id="state_e" placeholder="state">
+        <input type="text" id="country_e" placeholder="country">
+        <input type="text" id="continent_e" placeholder="continent">
+        <input type="text" id="latitude_e" placeholder="latitude">
+        <input type="text" id="longitude_e" placeholder="longitude">
+        <input type="text" id="occupation_e" placeholder="occupation">
+        <input type="text" id="industry_e" placeholder="industry">
+        <input type="text" id="domain_e" placeholder="domain">
+        <input type="text" id="article_languages_e" placeholder="article_languages">
+        <input type="text" id="page_views_e" placeholder="page_views">
+        <input type="text" id="average_views_e" placeholder="average_views">
+        <input type="text" id="historical_popularity_index_e" placeholder="historical_popularity_index">
+        <div class="modal-actions">
+            <button id="btn-modal-edit">Szukaj</button>
+            <button id="btn-edit-close">Zamknij</button>
+        </div>
+    </div>
+    </div>
 
     <section class="block-section">
         
@@ -40,6 +136,5 @@
 
     </section>
     
-    <script src="core.js"></script>
 </body>
 </html>
