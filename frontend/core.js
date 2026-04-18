@@ -121,7 +121,7 @@ async function openEditModal() {
     response = await fetch("http://localhost:3000/objects/ids");
     data = await response.json();
     const select = document.getElementById("article_id_edit");
-    select.innerHTML = '<option>Wybierz rekord</option>';
+    select.innerHTML = '<option>Choose record</option>';
 
     data.forEach(item => {
         const option = document.createElement("option");
@@ -136,11 +136,11 @@ async function applyFilter() {
     const query = document.getElementById("filterName").value;
     const param = document.getElementById("filterParam").value;
 
-    response = await fetch(
+    const response = await fetch(
         `http://localhost:3000/object?param=${param}&query=${query}`
     );
-    
-    data = await response.json();
+
+    const data = await response.json();
     renderTable(data);
 
     closeModal("filterModal");
@@ -197,7 +197,6 @@ function closeModal(id) {
             let response;
             let data;
             //GET /objects
-            //TODO podpiąć żeby pokazywało z database, a poza tym działa
             if (input === "GET /objects") {
                 
             }
@@ -216,8 +215,6 @@ function closeModal(id) {
                 renderTable(data);
             }
             //POST /object
-            //narazie dodaje przykladowy rekord
-            //TODO zmienic zeby dodawalo wpisany przez uzytkownika
             else if (input === "POST /object") {
                 response = await fetch("http://localhost:3000/object", {
                     method: "POST",
@@ -249,8 +246,6 @@ function closeModal(id) {
                 resultBlock.innerText = JSON.stringify(data, null, 2);
             }
             //PUT /object
-            //narazie zmienia przykladowy rekord na przykładowy
-            //TODO zrobic zeby zmienialo podany rekord i żeby ogólnie działało
             else if (input === "PUT /object") {
                 response = await fetch("http://localhost:3000/object/1", {
                     method: "PUT",
@@ -265,7 +260,7 @@ function closeModal(id) {
                 data = await response.json();
                 resultBlock.innerText = JSON.stringify(data, null, 2);
             }
-            //TODO ten na 5.0
+            
             else {
                 resultBlock.innerHTML = `<p style="color:red">Invalid command</p>`;
                 return;

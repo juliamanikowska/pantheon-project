@@ -6,15 +6,6 @@ const app = express();
 const PORT = 3000;
 
 //do testów potem zamiast tego podłączyć databse
-/*
-const objects = [
-    { id: 1, name: "Albert Einstein", score: 98, country: "Germany", year: 1879 },
-    { id: 2, name: "Marie Curie", score: 95, country: "Poland", year: 1867 },
-    { id: 3, name: "Isaac Newton", score: 97, country: "UK", year: 1643 },
-    { id: 4, name: "Nikola Tesla", score: 94, country: "Serbia", year: 1856 }
-];
-*/
-
 const objects=[
     {article_id: 1, full_name: "Plato", sex: "Male", birth_year: -4, city: "Athens", state: null, country: "Greece", continent: "Europe", latitude: 32.5, longitude: 34.9, occupation: "Philosopher", industry: "Philosophy", domain: "Humanities", article_languages: 142, page_views: 432135, average_views: 53252, historical_popularity_index: 31.9993},
     {article_id: 2, full_name: "Ropuchus Maximus", sex: "Female", birth_year: 1546, city: "Froggers", state: null, country: "Mongolia", continent: "Asia", latitude: 3.6, longitude: 123, occupation: "Frogknower", industry: "Nature", domain: "Nature", article_languages: 3, page_views: 654, average_views: 3, historical_popularity_index: 32.93},
@@ -80,7 +71,6 @@ app.get("/object/:id", async (req, res) => {
 });
 
 //GET /objects?name=
-//TODO zmienic name na inna kolumne - zdecydowac jaką
 app.get("/object", async (req, res) => {
     const { param, query } = req.query;
 
@@ -103,8 +93,6 @@ app.get("/object", async (req, res) => {
 });
 
 //POST /object
-//narazie dodaje przykladowy rekord (dokladnie we frontend/core.js opisany)
-//TODO zmienic zeby dodawalo wpisany przez uzytkownika
 app.post("/object", async (req, res) => {
     const {
         article_id,
@@ -180,8 +168,6 @@ app.post("/object", async (req, res) => {
 });
 
 //PUT /object
-//narazie zmienia przykladowy rekord na przykładowy (dokladnie we frontend/core.js opisany)
-//TODO zrobic zeby zmienialo podany rekord i żeby ogólnie działało
 app.put("/object/:id", async (req, res) => {
     const id = parseInt(req.params.id);
     const {
@@ -266,7 +252,7 @@ app.put("/object/:id", async (req, res) => {
 //GET /objects/stats
 app.get("/objects/stats", async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM pantheon ORDER BY page_views DESC  LIMIT 5');
+        const result = await pool.query('SELECT * FROM pantheon ORDER BY historical_popularity_index::float DESC LIMIT 5');
         res.json(result.rows);
     } catch (err) {
         console.error(err);
