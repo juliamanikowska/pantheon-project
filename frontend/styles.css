@@ -89,7 +89,6 @@ th{
     z-index: 1;
 }
 
-/* przyciski */
 .button-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -119,20 +118,22 @@ th{
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
-/* kolory wg funkcji */
 .get { background: #2d6cdf; }
 .filter { background: #17a2b8; }
 .post { background: #28a745; }
 .put { background: #fd7e14; }
 .stats { background: #6f42c1; }
 
-
-/* MODALE */
 .modal {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.4);
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-content {
@@ -141,4 +142,58 @@ th{
     width: 300px;
     margin: 10% auto;
     border-radius: 10px;
+    border: 2px solid lightblue;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.modal-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.modal-form input {
+    width: 100%;
+}
+
+.modal-form .full {
+    grid-column: span 2;
+}
+
+.modal-actions {
+    padding-top: 10px;
+}
+
+.modal-actions button {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-actions .confirm {
+    background: #2d6cdf;
+    color: white;
+}
+
+.modal-actions .search {
+    background: #2d6cdf;
+    color: white;
+}
+
+.modal-actions .cancel {
+    background: #e9ecef;
+    color: darkslategray;
+}
+
+.modal-content select {
+    background: white;
+    border: 2px solid lightblue;
+    border-radius: 10px;
+    padding: 10px 35px 10px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-bottom: 10px;
 }

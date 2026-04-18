@@ -2,9 +2,9 @@
 Cloud system's project
 
 ### Database
-1. Pobrać i zainstalować PostgreSQL z oficjalnej strony.
-2. Postępować zgodnie z instrukcją instalacji.
-3. Następnie stworzyć tabelę za pomocą polecenia SQL
+1. Download and install PostgreSQL from the official website.
+2. Follow the installation instructions.
+3. Then create a table using an SQL command:
 ```sql
 CREATE TABLE pantheon (
     article_id INT PRIMARY KEY,
@@ -26,15 +26,17 @@ CREATE TABLE pantheon (
     historical_popularity_index TEXT
 );
 ```
-4. Skopiować dane z pliku CSV do tabeli wpisując poniższe polecenie w terminalu postgresql odpowiednio podając ścieżkę do pliku csv.
+4. Copy the data from the CSV file into the table by entering the following command in the PostgreSQL terminal, making sure to provide the correct path to the CSV file.
 ```psql
 \copy pantheon FROM 'ścieżka do pliku csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
 ```
+5. In the ```backend/db.js``` file, in the field ```password: 'password' ```, enter the password for your PostgreSQL database.
 
 ### Backend
 
 ```bash
     cd backend
+    npm install
     node server.js
 ```
 
