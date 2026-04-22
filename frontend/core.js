@@ -111,13 +111,13 @@ async function getAll() {
     renderTable(data);
 }
 function openFilterModal() {
-    document.getElementById("filterModal").style.display = "block";
+    document.getElementById("filterModal").style.display = "flex";
 }
 function openCreateModal() {
-    document.getElementById("createModal").style.display = "block";
+    document.getElementById("createModal").style.display = "flex";
 }
 async function openEditModal() {
-    document.getElementById("editModal").style.display = "block";
+    document.getElementById("editModal").style.display = "flex";
     response = await fetch("http://localhost:3000/objects/ids");
     data = await response.json();
     const select = document.getElementById("article_id_edit");
