@@ -1,3 +1,5 @@
+import { addr } from './config.js';
+
 document.addEventListener("DOMContentLoaded", () => {
     const button = document.getElementById("submit-button");
     const inputField = document.getElementById("command-field");
@@ -106,19 +108,19 @@ function fillForm(data) {
 }
 
 async function getAll() {
-    response = await fetch("http://localhost:3000/objects");
+    response = await fetch(`${addr}objects`);
     data = await response.json();
     renderTable(data);
 }
 function openFilterModal() {
-    document.getElementById("filterModal").style.display = "block";
+    document.getElementById("filterModal").style.display = "flex";
 }
 function openCreateModal() {
-    document.getElementById("createModal").style.display = "block";
+    document.getElementById("createModal").style.display = "flex";
 }
 async function openEditModal() {
-    document.getElementById("editModal").style.display = "block";
-    response = await fetch("http://localhost:3000/objects/ids");
+    document.getElementById("editModal").style.display = "flex";
+    response = await fetch(`${addr}objects/ids`);
     data = await response.json();
     const select = document.getElementById("article_id_edit");
     select.innerHTML = '<option>Choose record</option>';
@@ -137,7 +139,7 @@ async function applyFilter() {
     const param = document.getElementById("filterParam").value;
 
     const response = await fetch(
-        `http://localhost:3000/object?param=${param}&query=${query}`
+        `${addr}object?param=${param}&query=${query}`
     );
 
     const data = await response.json();
@@ -148,7 +150,7 @@ async function applyFilter() {
 async function addObject() {
     const data = collectData();
 
-    response = await fetch("http://localhost:3000/object", {
+    response = await fetch(`${addr}object`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -168,7 +170,7 @@ async function editObject() {
             return;
         }
 
-    response = await fetch(`http://localhost:3000/object/${id}`, {
+    response = await fetch(`${addr}object/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -180,7 +182,7 @@ async function editObject() {
     closeModal("editModal");
 }
 async function getStats() {
-    response = await fetch("http://localhost:3000/objects/stats");
+    response = await fetch(`${addr}objects/stats`);
     data = await response.json();
     renderTable(data);
 }
@@ -207,7 +209,7 @@ function closeModal(id) {
                 const param = "sex";
 
                 response = await fetch(
-                    `http://localhost:3000/object?param=${param}&query=${query}`
+                    `${addr}object?param=${param}&query=${query}`
                 );
                 
                 data = await response.json();
@@ -216,7 +218,7 @@ function closeModal(id) {
             }
             //POST /object
             else if (input === "POST /object") {
-                response = await fetch("http://localhost:3000/object", {
+                response = await fetch(`${addr}object`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -247,7 +249,7 @@ function closeModal(id) {
             }
             //PUT /object
             else if (input === "PUT /object") {
-                response = await fetch("http://localhost:3000/object/1", {
+                response = await fetch(`${addr}object/1`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
@@ -295,7 +297,7 @@ function closeModal(id) {
             fillForm({});
             return;
         }
-        const res = await fetch(`http://localhost:3000/object/${id}`);
+        const res = await fetch(`${addr}object/${id}`);
         const data = await res.json();
         fillForm(data);
     });
