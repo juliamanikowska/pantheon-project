@@ -1,0 +1,27 @@
+- hosts: all
+  become: yes
+
+  tasks:
+
+    # FRONTEND
+    - name: install apache
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+
+    - name: start apache
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: copy frontend
+      ansible.builtin.copy:
+        src: frontend/
+        dest: /var/www/html/
+
+    - name: replace backend addres
+      lineinfile:
+        path: /var/www/html/config.js
+        regexp: '^const addr'
+        line: 'const addr = "http://192.168.56.11:3000/";'

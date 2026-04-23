@@ -1,0 +1,65 @@
+- hosts: all
+  become: yes
+
+  tasks:
+
+    # PostgreSQL
+    - name: install PostgreSQL
+      ansible.builtin.apt:
+        name: 
+          - postgresql
+          - postgresql-contrib
+          - python3-psycopg2
+        state: present
+
+    - name: start PostgreSQL
+      ansible.builtin.service:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    - name: copy dataset
+      ansible.builtin.copy:
+        src: database/database.csv
+        dest: /database/
+
+    - name: copy database script
+      ansible.builtin.copy:
+        src: database/database.sql
+        dest: /database/
+
+    - name: run SQL script
+      shell: sudo -u postgres psql -U postgres -d postgres -f /database/database.sql
+
+    - name: install ACL
+      apt:
+        name: acl
+        state: present
+
+    - name: get PostgreSQL version
+      command: ls /etc/postgresql
+      register: postgreSQL_version
+
+    - name: set postgres password
+      become: yes
+      become_method: sudo
+      become_user: postgres
+      community.postgresql.postgresql_user:
+        name: postgres
+        password: "password"
+
+    - name: set listening on all addresses
+      lineinfile:
+        path: /etc/postgresql/{{ postgreSQL_version.stdout_lines[0] }}/main/postgresql.conf
+        regexp: '^#?listen_addresses'
+        line: "listen_addresses = '*'"
+
+    - name: allow backend-postgresql network connections
+      lineinfile:
+        path: /etc/postgresql/{{ postgreSQL_version.stdout_lines[0] }}/main/pg_hba.conf
+        line: "host all all 192.168.56.0/24 md5"
+
+    - name: restart PostgreSQL
+      ansible.builtin.service:
+        name: postgresql
+        state: restarted

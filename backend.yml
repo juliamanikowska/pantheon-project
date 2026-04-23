@@ -1,0 +1,61 @@
+- hosts: all
+  become: yes
+
+  tasks:
+
+    - name: update apt cache
+      apt:
+        update_cache: yes
+        
+    - name: install NodeJS 24
+      shell: |
+        curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
+        apt-get install -y nodejs
+      args:
+        creates: /usr/bin/node
+    
+    - name: copy backend
+      ansible.builtin.copy:
+        src: backend/
+        dest: /backend/
+
+    - name: replace db addres
+      lineinfile:
+        path: /backend/db.js
+        regexp: '^\s*host'
+        line: "host: '192.168.56.12',"
+    
+    - name: install npm dependencies
+      command: npm install
+      args:
+        chdir: /backend
+
+    - name: create systemd service for backend
+      copy:
+        dest: /etc/systemd/system/backend.service
+        content: |
+          [Unit]
+          Description=Node.js Backend
+          After=network.target
+
+          [Service]
+          User=root
+          Type=simple
+          WorkingDirectory=/backend
+          ExecStart=/usr/bin/node server.js
+          Restart=always
+          RestartSec=5
+          Environment=NODE_ENV=production
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: start backend service
+      systemd:
+        name: backend
+        state: started
+        enabled: yes
