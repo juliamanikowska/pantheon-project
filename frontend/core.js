@@ -98,7 +98,6 @@ function collectDataEdit() {
 }
 
 function fillForm(data) {
-    console.log(data);
     Object.keys(data).forEach(key => {
         const input = document.getElementById(key+"_e");
         if (input) {
@@ -108,8 +107,8 @@ function fillForm(data) {
 }
 
 async function getAll() {
-    response = await fetch(`${addr}objects`);
-    data = await response.json();
+    const response = await fetch(`${addr}objects`);
+    const data = await response.json();
     renderTable(data);
 }
 function openFilterModal() {
@@ -120,8 +119,8 @@ function openCreateModal() {
 }
 async function openEditModal() {
     document.getElementById("editModal").style.display = "flex";
-    response = await fetch(`${addr}objects/ids`);
-    data = await response.json();
+    const response = await fetch(`${addr}objects/ids`);
+    const data = await response.json();
     const select = document.getElementById("article_id_edit");
     select.innerHTML = '<option>Choose record</option>';
 
@@ -150,7 +149,7 @@ async function applyFilter() {
 async function addObject() {
     const data = collectData();
 
-    response = await fetch(`${addr}object`, {
+    const response = await fetch(`${addr}object`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -170,7 +169,7 @@ async function editObject() {
             return;
         }
 
-    response = await fetch(`${addr}object/${id}`, {
+    const response = await fetch(`${addr}object/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -182,99 +181,13 @@ async function editObject() {
     closeModal("editModal");
 }
 async function getStats() {
-    response = await fetch(`${addr}objects/stats`);
-    data = await response.json();
+    const response = await fetch(`${addr}objects/stats`);
+    const data = await response.json();
     renderTable(data);
 }
 function closeModal(id) {
     document.getElementById(id).style.display = "none";
 }
-
-    async function handleCommand() {
-        const input = inputField.value.trim();
-
-        if (!input) return;
-
-        try {
-            let response;
-            let data;
-            //GET /objects
-            if (input === "GET /objects") {
-                
-            }
-            //GET /objects?name=
-            else if (input.startsWith("GET /object?name=")) {
-                // const query = input.split("=")[1];
-                const query = "Female";
-                const param = "sex";
-
-                response = await fetch(
-                    `${addr}object?param=${param}&query=${query}`
-                );
-                
-                data = await response.json();
-                console.log(data);
-                renderTable(data);
-            }
-            //POST /object
-            else if (input === "POST /object") {
-                response = await fetch(`${addr}object`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        article_id: 3, 
-                        full_name: "Bruce Lee", 
-                        sex: "Male", 
-                        birth_year: 1999, 
-                        city: "Kij wi", 
-                        state: "LA", 
-                        country: "China", 
-                        continent: "Asia", 
-                        latitude: 189, 
-                        longitude: 13.5, 
-                        occupation: "Actor", 
-                        industry: "Fighting", 
-                        domain: "Dragon", 
-                        article_languages: 6543, 
-                        page_views: 52543634, 
-                        average_views: 523452, 
-                        historical_popularity_index: 50.0
-                    })
-                });
-
-                data = await response.json();
-                resultBlock.innerText = JSON.stringify(data, null, 2);
-            }
-            //PUT /object
-            else if (input === "PUT /object") {
-                response = await fetch(`${addr}object/1`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        sex: "Female",
-                    })
-                });
-
-                data = await response.json();
-                resultBlock.innerText = JSON.stringify(data, null, 2);
-            }
-            
-            else {
-                resultBlock.innerHTML = `<p style="color:red">Invalid command</p>`;
-                return;
-            }
-
-        } catch (err) {
-            resultBlock.innerHTML = `<p style="color:red">Server error</p>`;
-        }
-
-        inputField.value = "";
-    }
-
 
     document.getElementById("btn-get").addEventListener("click", getAll);
     document.getElementById("btn-filter").addEventListener("click", openFilterModal);
@@ -301,10 +214,4 @@ function closeModal(id) {
         const data = await res.json();
         fillForm(data);
     });
-
-    // inputField.addEventListener("keydown", (e) => {
-    //     if (e.key === "Enter") {
-    //         handleCommand();
-    //     }
-    // });
 });

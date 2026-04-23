@@ -252,7 +252,7 @@ app.put("/object/:id", async (req, res) => {
 //GET /objects/stats
 app.get("/objects/stats", async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM pantheon ORDER BY historical_popularity_index::float DESC LIMIT 5');
+        const result = await pool.query('SELECT * FROM pantheon ORDER BY historical_popularity_index DESC LIMIT 5');
         res.json(result.rows);
     } catch (err) {
         console.error(err);
