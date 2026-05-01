@@ -1,0 +1,27 @@
+
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "postgres"
+    container_name: "db"
+    volumes:
+      - ../database:/docker-entrypoint-initdb.d
+
+  backend:
+    build:
+      context: ..
+      dockerfile: stage3/backend/Dockerfile
+    container_name: "backend"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: stage3/frontend/Dockerfile
+    container_name: "frontend"
+    ports:
+      - "8080:80"
